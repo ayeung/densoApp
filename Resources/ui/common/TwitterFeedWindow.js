@@ -235,12 +235,10 @@ function TwitterFeedWindow(name) {
 					var tmp = tweet,
 						location = coordinates;
 					return function(){
-						//TODO add logic to use module here
 						if (location) {
 							alert(location.coordinates);
-							// NAVIBRIDGE.addPOI(location.coordinates);
+							NAVIBRIDGE.addPOI({lon: location.coordinates[0], lat: location.coordinates[1], title: screen_name});
 						} else {
-													
 							var	addressWindow = Ti.UI.createWindow({
 								title: "Send location to device",
 								modal: true,
@@ -287,12 +285,18 @@ function TwitterFeedWindow(name) {
 								if (addressField.value) {
 									Ti.Geolocation.forwardGeocoder(addressField.value, function(e) {
 										if (e.success) {
-											alert("sent long: " + e.longitude + 'lat: ' + e.latitude);
+											// alert("sent long: " + e.longitude + 'lat: ' + e.latitude);
+											NAVIBRIDGE.addPOI({
+												lon : e.longitude,
+												lat : e.latitude,
+												title : screen_name
+											});
+											alert("Address Successfully sent to device");
+
 											addressWindow.close();
 										} else {
 											alert('Invalid address: ' + addressField.value);
 										}
-
 									});
 								} else {
 									alert('Invalid address');
