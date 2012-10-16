@@ -212,7 +212,8 @@ function TwitterFeedWindow(name) {
 	var data = [],
 		NAVIBRIDGE = require('ti.navibridge'),
 		xhr = Ti.Network.createHTTPClient();
-		
+
+	NAVIBRIDGE.SetApplicationID('ICiAV4Ay');
 	xhr.timeout = 1000000;
 	xhr.open("GET","http://api.twitter.com/1/statuses/user_timeline.json?screen_name="+screen_name);
 
@@ -236,8 +237,10 @@ function TwitterFeedWindow(name) {
 						location = coordinates;
 					return function(){
 						if (location) {
-							alert(location.coordinates);
-							NAVIBRIDGE.addPOI({lon: location.coordinates[0], lat: location.coordinates[1], title: screen_name});
+							NAVIBRIDGE.addPOI({
+								lon : parseFloat(location.coordinates[0]),
+								lat : parseFloat(location.coordinates[1])
+							}); 
 						} else {
 							var	addressWindow = Ti.UI.createWindow({
 								title: "Send location to device",
@@ -285,14 +288,10 @@ function TwitterFeedWindow(name) {
 								if (addressField.value) {
 									Ti.Geolocation.forwardGeocoder(addressField.value, function(e) {
 										if (e.success) {
-											// alert("sent long: " + e.longitude + 'lat: ' + e.latitude);
 											NAVIBRIDGE.addPOI({
-												lon : e.longitude,
-												lat : e.latitude,
-												title : screen_name
+												lon : parseFloat(e.longitude),
+												lat : parseFloat(e.latitude)
 											});
-											alert("Address Successfully sent to device");
-
 											addressWindow.close();
 										} else {
 											alert('Invalid address: ' + addressField.value);

@@ -1,7 +1,7 @@
 function ApplicationWindow() {
 	//declare module dependencies
-	var MasterView = require('ui/common/MasterView'),
-		DetailView = require('ui/common/DetailView');
+	var FoodTrucksView = require('ui/common/FoodTrucksView'),
+		TwitterFeedWindow = require('ui/common/TwitterFeedWindow');
 		
 	//create object instance
 	var self = Ti.UI.createWindow({
@@ -9,35 +9,23 @@ function ApplicationWindow() {
 	});
 		
 	//construct UI
-	var masterView = new MasterView(),
-		detailView = new DetailView();
-		
-	masterView.borderColor = '#000';
-	masterView.borderWidth = 1;
-		
+	var foodTrucksView = new FoodTrucksView();
+			
 	//create master view container
-	var masterContainer = Ti.UI.createView({
-		top:0,
-		bottom:0,
-		left:0,
-		width:240
+	var foodTrucksContainerWindow = Ti.UI.createWindow({
+		title:'Food Trucks'
 	});
-	masterContainer.add(masterView);
-	self.add(masterContainer);
+	foodTrucksContainerWindow.add(foodTrucksView);
 	
-	//create detail view container
-	var detailContainer = Ti.UI.createView({
-		top:0,
-		bottom:0,
-		right:0,
-		left:240
+	//create iOS specific NavGroup UI
+	var navGroup = Ti.UI.iPhone.createNavigationGroup({
+		window:foodTrucksContainerWindow
 	});
-	detailContainer.add(detailView);
-	self.add(detailContainer);
+	self.add(navGroup);
 	
 	//add behavior for master view
-	masterView.addEventListener('itemSelected', function(e) {
-		detailView.fireEvent('itemSelected',e);
+	foodTrucksView.addEventListener('itemSelected', function(e) {
+		navGroup.open(new TwitterFeedWindow(e.name));
 	});
 	
 	return self;
